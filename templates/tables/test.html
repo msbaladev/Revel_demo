@@ -1,0 +1,130 @@
+{% extends 'main.html' %} 
+
+{% load static %}
+
+{% block table %}
+
+<link
+  href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<style>
+  .table-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .badge-active {
+    background-color: #d1e7dd;
+    color: #0f5132;
+  }
+  .badge-done {
+    background-color: #c3e6cb;
+    color: #155724;
+  }
+  .badge-pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  .badge-close {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+  .badge {
+    font-size: 0.875em;
+  }
+</style>
+
+<div class="container mt-5 col-12">
+  <h2>Data Table</h2>
+  <p>
+    For basic styling—light padding and only horizontal dividers—use the class
+    table.
+  </p>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Project</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>
+          <img src="path_to_image1.jpg" alt="Avatar" class="table-avatar" />
+          Esther Howard
+        </td>
+        <td>yourmail@gmail.com</td>
+        <td>Admin Dashboard Design</td>
+        <td><span class="badge badge-active">Active</span></td>
+        <td><button class="btn btn-danger btn-sm">Delete</button></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>
+          <img src="path_to_image2.jpg" alt="Avatar" class="table-avatar" /> D.
+          Jonathon
+        </td>
+        <td>yourmail@gmail.com</td>
+        <td>React Dashboard</td>
+        <td><span class="badge badge-active">Active</span></td>
+        <td><button class="btn btn-danger btn-sm">Delete</button></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>
+          <img src="path_to_image3.jpg" alt="Avatar" class="table-avatar" />
+          John Doe
+        </td>
+        <td>yourmail@gmail.com</td>
+        <td>Bootstrap Template</td>
+        <td><span class="badge badge-done">Done</span></td>
+        <td><button class="btn btn-danger btn-sm">Delete</button></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>
+          <img src="path_to_image4.jpg" alt="Avatar" class="table-avatar" />
+          Rayhan Jamil
+        </td>
+        <td>yourmail@gmail.com</td>
+        <td>Css Grid Template</td>
+        <td><span class="badge badge-pending">Pending</span></td>
+        <td><button class="btn btn-danger btn-sm">Delete</button></td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>
+          <img src="path_to_image5.jpg" alt="Avatar" class="table-avatar" />
+          Esther Howard
+        </td>
+        <td>yourmail@gmail.com</td>
+        <td>Admin Dashboard Design</td>
+        <td><span class="badge badge-close">Close</span></td>
+        <td><button class="btn btn-danger btn-sm">Delete</button></td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>
+          <img src="path_to_image6.jpg" alt="Avatar" class="table-avatar" />
+          Anee Doe
+        </td>
+        <td>yourmail@gmail.com</td>
+        <td>Space Template Update</td>
+        <td><span class="badge badge-active">Active</span></td>
+        <td><button class="btn btn-danger btn-sm">Delete</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock  %}

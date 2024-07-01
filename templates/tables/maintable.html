@@ -1,0 +1,218 @@
+{% load static %} {% block content %}
+
+<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/css/lineicons.css' %}" />
+<link
+  rel="stylesheet"
+  href="{% static 'assets/css/materialdesignicons.min.css' %}"
+/>
+<link rel="stylesheet" href="{% static 'assets/css/fullcalendar.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
+
+<div class="col-12">
+  <div class="card-style mb-30">
+    <h6 class="mb-10">Data Table</h6>
+
+    <div class="table-wrapper table-responsive">
+      <table class="table">
+        <thead>
+          <tr class="bg-light">
+            <th>
+              <h6>#</h6>
+            </th>
+            <th>
+              <h6>Name</h6>
+            </th>
+            <th>
+              <h6>Email</h6>
+            </th>
+            <th>
+              <h6>Project</h6>
+            </th>
+            <th>
+              <h6>Status</h6>
+            </th>
+            <th>
+              <h6>Action</h6>
+            </th>
+          </tr>
+          <!-- end table row-->
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="">heloo</div>
+            </td>
+            <td class="min-width">
+              <p>Esther Howard</p>
+            </td>
+            <td class="min-width">
+              <p><a href="#0">yourmail@gmail.com</a></p>
+            </td>
+            <td class="min-width">
+              <p>Admin Dashboard Design</p>
+            </td>
+            <td class="min-width">
+              <span class="status-btn active-btn">Active</span>
+            </td>
+            <td>
+              <div class="action">
+                <button class="text-danger">
+                  <i class="lni lni-trash-can"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <!-- end table row -->
+        </tbody>
+      </table>
+      <!-- end table -->
+    </div>
+  </div>
+  <!-- end card -->
+</div>
+
+<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/Chart.min.js' %}"></script>
+<script src="{% static 'assets/js/dynamic-pie-chart.js' %}"></script>
+<script src="{% static 'assets/js/moment.min.js' %}"></script>
+<script src="{% static 'assets/js/fullcalendar.js' %}"></script>
+<script src="{% static 'assets/js/jvectormap.min.js' %}"></script>
+<script src="{% static 'assets/js/world-merc.js' %}"></script>
+<script src="{% static 'assets/js/polyfill.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+{% endblock %}
+
+<script>
+  $(window).on("load", function(){
+      //{% for tab in tabs %}
+  $('#export_table tfoot th').each( function (i) {
+          var title = $('#export_table thead th').eq( $(this).index() ).text();
+          $(this).html( '<input type="text" placeholder="Search '+title+'" data-index="'+i+'" />' );
+      } );
+      //$.fn.dataTable.ext.errMode = 'none';
+  var table_{{ forloop.counter }} = $('#export_table').DataTable( {
+                  "autoWidth": true,
+                  scrollY: '43vh',
+                  scrollX: '70vh',
+                  dom: 'Bfrtip',
+                  lengthMenu: [
+                      [ 10, 25, 50, -1 ],
+                      [ '10 rows', '25 rows', '50 rows', 'Show all' ]
+                  ],
+                  buttons: [
+                  'colvis',
+                  'pageLength',
+                      {
+                          extend: 'excelHtml5',
+                          text: '<i class="fa fa-file-excel-o"></i> Export',
+                          title: "{{ tab.tab }} exported data",
+                          exportOptions: {
+                              columns: ':visible'
+                          }
+                      },
+
+                  ],
+                  ajax: {
+                  url: '{% url "Quanta_data_ICC" %}',
+                  "type": "GET",
+                  "data": function(d) {3
+                  return $.extend({}, d, {
+                  "Site": "{{tab.tab}}",
+                  "Qtr": "{{ quarter|safe }}",
+                  "page_type": "{{ page_type }}",
+                  });
+                  }
+
+                  },
+                  columns: [{
+                      'data': 'id',
+                       'render': function (data, type, full, meta){
+
+                          var listed=JSON.parse(sessionStorage.getItem("{{ forloop.counter }}_checkbox_values")||'[]')
+
+                          if (listed.includes(`${data.id}`)){
+                              checked='checked'
+                          }else{checked=''}
+                          if (data.filename === "No data") {
+                              data = `
+
+                                  <input type="checkbox" onchange="checkbox_val_{{ forloop.counter }}(this)" style="position:absolute" class='float-right checkbox_class_{{ forloop.counter }}'  ${checked}  name="id[]" value='${data.id}'> `
+
+                              }
+
+                          else{
+
+                               data = `
+                                  <input type="checkbox" onchange="checkbox_val_{{ forloop.counter }}(this)" style="position:absolute" class='float-right checkbox_class_{{ forloop.counter }}'  ${checked}  name="id[]" value='${data}'> `
+
+                              }
+                          return data;
+                          // return '<span  onclick="open_model_{{ forloop.counter }}('+data+')" class="badge badge-primary badge-square mr-2"><i class="ft-edit"></i></span> <input type="checkbox" class="float-right" onchange="checkbox_val_{{ forloop.counter }}(this)" style="position:absolute" name="id[]" value="'+data+'">';
+                      }
+
+                  },{'data': 'category'
+                  },
+                  {  'data': 'pn_no_rev'
+                  },
+                  {   'data': 'qpn'
+                  },{
+                      'data': 'material'
+                  },
+
+
+
+
+
+
+
+
+
+
+
+
+
+                  ],
+                  orderCellsTop: true,
+                  "rowCallback": function( row, data, index ) {
+                      if ( data['discrepancy'] == "Yes" )
+                      {
+                          $('td', row).addClass('bg-danger bg-lighten-4');
+                      }
+                      $('td', row).addClass('text-nowrap');
+                  }
+                  //fixedHeader: { headerOffset: $('.navbar').outerHeight() }
+              });
+
+              // $( table_{{ forloop.counter }}.table().container() ).on( 'keyup', 'tfoot input', function () {
+              //     table_{{ forloop.counter }}
+              //         .column( $(this).data('index') )
+              //         .search( this.value )
+              //         .draw();
+              // });
+              $('.dataTables_filter label').css('margin-top','0px');
+              $('.dt-buttons').addClass('float-left');
+              $('.buttons-html5').addClass('btn-sm btn-outline-secondary');
+              $('.buttons-collection').addClass('btn-sm btn-outline-secondary');
+              $('.sorting').addClass('bg-blue bg-darken-4 white')
+              $('.sorting_asc').addClass('bg-blue bg-darken-4 white')
+              $('.sorting_desc').addClass('bg-blue bg-darken-4 white')
+      //{% endfor %}
+  $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+  $($.fn.dataTable.tables(true)).DataTable().columns.adjust().responsive.recalc();
+  });
+  var selecttab=sessionStorage.getItem("current_tab");
+  //alert(selecttab);
+  if(selecttab != null){
+      $('a[href$="'+selecttab+'"]:first').trigger('click');
+  }
+  sessionStorage.setItem("current_tab",null);
+  });
+
+  function loadrmaJabil(quarter) {
+      window.location.href = "/ICC/Index/Quanta/"+quarter;
+  }
+
+
+</script>

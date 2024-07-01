@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DataTables Example</title>
+    <link
+        rel="stylesheet"
+        href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.css"
+    />
+</head>
+<body>
+    <table id="table_id" class="display">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Salary</th>
+                <th>Office</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.8/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            alert("working")
+            var data = [
+                {
+                    name: "Tiger Nixon",
+                    position: "System Architect",
+                    salary: "$3,120",
+                    start_date: "2011/04/25",
+                    office: "Edinburgh",
+                    extn: "5421",
+                },
+                {
+                    name: "Garrett Winters",
+                    position: "Director",
+                    salary: "$5,300",
+                    start_date: "2011/07/25",
+                    office: "Edinburgh",
+                    extn: "8422",
+                },
+            ];
+
+            $('#table_id').DataTable({
+                autoWidth: true,
+                // scrollY: "43vh",
+                // scrollX: "70vh",
+                // dom: "Bfrtip",
+                data: data,
+                columns: [
+                    { data: "name" },
+                    { data: "position" },
+                    { data: "salary" },
+                    { data: "office" },
+                ],
+            });
+        });
+    </script>
+</body>
+</html>
