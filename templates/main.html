@@ -715,7 +715,7 @@
 
 
             <!-- End Col -->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
+            <div class="col-xl-3 col-lg-4 col-sm-6" data-toggle="modal" data-target="#Bulk_upload_Modal">
               <div class="icon-card mb-30 cursor-pointer" style="cursor: pointer;">
                 <div class="icon success">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -795,58 +795,28 @@
                         <th>Email</th>
                         <th>Project</th>
                         <th>Status</th>
+                        <th>usd</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <td>1</td>
-                        <td><img src="path_to_image1.jpg" alt="Avatar" class="table-avatar"> Esther Howard</td>
-                        <td>yourmail@gmail.com</td>
-                        <td>Admin Dashboard Design</td>
-                        <td><span class="badge badge-active">Active</span></td>
-                        <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                      </tr>
-                      <tr>
-                        <td>2</td>
-                        <td><img src="path_to_image2.jpg" alt="Avatar" class="table-avatar"> D. Jonathon</td>
-                        <td>yourmail@gmail.com</td>
-                        <td>React Dashboard</td>
-                        <td><span class="badge badge-active">Active</span></td>
-                        <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                      </tr>
-                      <tr>
-                        <td>3</td>
-                        <td><img src="path_to_image3.jpg" alt="Avatar" class="table-avatar"> John Doe</td>
-                        <td>yourmail@gmail.com</td>
-                        <td>Bootstrap Template</td>
-                        <td><span class="badge badge-done">Done</span></td>
-                        <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                      </tr>
-                      <tr>
-                        <td>4</td>
-                        <td><img src="path_to_image4.jpg" alt="Avatar" class="table-avatar"> Rayhan Jamil</td>
-                        <td>yourmail@gmail.com</td>
-                        <td>Css Grid Template</td>
-                        <td><span class="badge badge-pending">Pending</span></td>
-                        <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                      </tr>
-                      <tr>
-                        <td>5</td>
-                        <td><img src="path_to_image5.jpg" alt="Avatar" class="table-avatar"> Esther Howard</td>
-                        <td>yourmail@gmail.com</td>
-                        <td>Admin Dashboard Design</td>
-                        <td><span class="badge badge-close">Close</span></td>
-                        <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                      </tr>
-                      <tr>
-                        <td>6</td>
-                        <td><img src="path_to_image6.jpg" alt="Avatar" class="table-avatar"> Anee Doe</td>
-                        <td>yourmail@gmail.com</td>
-                        <td>Space Template Update</td>
-                        <td><span class="badge badge-active">Active</span></td>
-                        <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                      </tr>
+                   
+                        
+                          {% for i in data %}
+                          <tr>
+                            <td>{{i.id}}</td>
+                            <td><img src="path_to_image1.jpg" alt="Avatar" class="table" /> </td>
+                            <td>{{i.item}}</td>
+                            <td>{{i.pn}}</td>
+                            <td>{{i.qty}}</td>
+                            <td>{{i.usd}}</td>
+                            <td><button class="btn btn-danger btn-sm">Delete</button></td>
+                            </tr>
+                            {% endfor %}
+                          </tr>
+                        
+                   
+                     
                     </tbody>
                   </table>
                 </div>

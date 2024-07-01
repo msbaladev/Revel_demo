@@ -14,4 +14,7 @@ class reval_file(models.Model):
     unit_price =  models.FloatField(null=True)
     ext_price = models.FloatField(null=True)
     remark = models.CharField(max_length=100,null=True)
-    unit_price = models.CharField(max_length=100,null=True)
+    status = models.CharField(max_length=150,null=True)
+    approval_comments=models.CharField(max_length=150,null=True)
+    created_on= models.DateTimeField(auto_now_add=True,null=True)
+  
