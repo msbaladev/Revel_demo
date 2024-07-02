@@ -1,5 +1,6 @@
 from io import BytesIO
 import mimetypes
+import re
 from wsgiref.types import FileWrapper
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
@@ -9,12 +10,22 @@ from django.utils.encoding import smart_str
 from iness import settings
 from .models import *
 
+from django.core.files.storage import FileSystemStorage
+
 # Create your views here.
 
 
 def home(request):
-    data = reval_file.objects.all()
-    print(data,"ppp")
+    quarter=request.POST.get('quarter')
+    if quarter== None:
+        quarter='Q1'
+    else:
+        quarter=quarter
+
+   
+    data = reval_file.objects.filter(quarter=quarter).values()
+    print(quarter,"]][]][  ]")
+    # return JsonResponse({"data":list(data)},safe=False)
     return render(request, "main.html", {"data": data})
 
 
@@ -23,23 +34,23 @@ def signin(request):
 
 
 def file_upload(request):
-    print("++++++++++++++++++++++++++++=")
+    # print("++++++++++++++++++++++++++++=")
     try:
         if request.method == "POST":
             file = request.FILES["file"]
-            quarter = request.POST.get('quarter')
+            quarter = request.POST.get("quarter")
             data = pd.read_excel(file, engine="openpyxl")
-            
+
             data.fillna("0", inplace=True)
             # data.dropna(subset=['Site', 'PN'],how='any',inplace=True)
-            print(quarter,"[]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]")
+        
             # data=data.replace({np.NaN: None})
             # delete= icc_quanta.objects.filter(quarter = quarter).delete()
             row_iter = data.iterrows()
             # print("111")
             bulk_update = []
             for index, row in row_iter:
-                print(row["Item"])
+           
                 revel_data = reval_file(
                     quarter=quarter,
                     item=row["Item"],
@@ -59,104 +70,94 @@ def file_upload(request):
         pass
 
 
-
-
-
 def reval_data(request):
-    data = reval_file.objects.all()
-    print(data,"ppp")
-    return render(request, "main.html", {"data": data})
+    quarter=request.POST.get('quarter')
+    if quarter== None:
+        quarter='Q1'
+    else:
+        quarter=quarter
 
-
-
+   
+    data = reval_file.objects.filter(quarter=quarter).values()
+    print(quarter,"]][]][  ]")
+    return JsonResponse({"data":list(data)},safe=False)
 
 
 # from openpyxl.worksheet.datavalidation import data
 
+
 def download_Iness_bulkapproval(request, quarter="Q1"):
-    columns = ['item', 'quarter', 'pn', 'description', 'qty', 'usd', 'scrap', 'unit_freight', 'unit_price', 'ext_price', 'remark','status','approval_comments']
-    alias = ['item', 'quarter', 'pn', 'description','qty', 'usd', 'scrap', 'unit_freight'   , 'unit_price', 'ext_price', ' remark', 'status','approval_comments']
-    
+    columns = [
+        "item",
+        "quarter",
+        "pn",
+        "description",
+        "qty",
+        "usd",
+        "scrap",
+        "unit_freight",
+        "unit_price",
+        "ext_price",
+        "remark",
+        "status",
+        "approval_comments",
+    ]
+    alias = [
+        "item",
+        "quarter",
+        "pn",
+        "description",
+        "qty",
+        "usd",
+        "scrap",
+        "unit_freight",
+        "unit_price",
+        "ext_price",
+        "remark",
+        "status",
+        "approval_comments",
+    ]
+
     with BytesIO() as b:
-        with pd.ExcelWriter(b) as writer:
+        with pd.ExcelWriter(b, engine="xlsxwriter") as writer:
             data = reval_file.objects.filter(quarter=quarter).values_list(*columns)
             df = pd.DataFrame(data, columns=columns)
 
             df.to_excel(writer, index=False, header=alias, sheet_name="Sheet1")
 
-            worksheet = writer.sheets['Sheet1']
             workbook = writer.book
-            money = workbook.add_format({'num_format': '$#,##0.0000'})
-            
-            header_format_3 = workbook.add_format({
-            'bold': True,
-            'text_wrap': True,
-            'valign': 'top',
-            'fg_color': 'green',
-            'color':'white',
-            'border': 1})
-            # Add data validation for the "status" column
-            
-            worksheet.set_column('L:M',None,header_format_3)
-            worksheet.data_validation('S1:S1048576', {'validate': 'list', 'source': ['Approved', 'Rejected']})
-            writer.close()
-            dv = workbook.data_validation
-            dv.add(worksheet['S1:S1048576'], {'validate': 'list', 'source': ['Approved', 'Rejected']})
+            worksheet = writer.sheets["Sheet1"]
 
-        response = HttpResponse(b.getvalue(), content_type='application/vnd.ms-excel')
-        response['Content-Disposition'] = f'inline; filename="ICC Quanta InESS Bulk upload All Parts.xlsx"'
+            money_format = workbook.add_format({"num_format": "$#,##0.0000"})
+
+            header_format_3 = workbook.add_format(
+                {
+                    "bold": True,
+                    "text_wrap": True,
+                    "valign": "top",
+                    "fg_color": "green",
+                    "color": "white",
+                    "border": 1,
+                }
+            )
+
+            # Apply the header format
+            for col_num in range(len(alias)):
+                if alias[col_num] in ["status", "approval_comments"]:
+                    worksheet.write(0, col_num, alias[col_num], header_format_3)
+                else:
+                    worksheet.write(0, col_num, alias[col_num])
+
+            # Apply data validation for the "status" column
+            worksheet.data_validation(
+                "L2:L1048576", {"validate": "list", "source": ["Approved", "Rejected"]}
+            )
+
+        response = HttpResponse(b.getvalue(), content_type="application/vnd.ms-excel")
+        response["Content-Disposition"] = (
+            'inline; filename="QP InESS Bulk upload All Parts.xlsx"'
+        )
         return response
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-   
-    
-    
-    # columns = ['item', 'quarter', 'pn', 'description', 'qty', 'usd', 'scrap', 'unit_freight', 'unit_price','ext_price','remark','status','approval_comments']
-    
-
-    # alias = ['item', 'quarter', 'pn', 'description','qty', 'usd', 'scrap', 'unit_freight'   , 'unit_price', 'ext_price', ' remark', 'status','approval_comments']
-    # type='All'
-    # with BytesIO() as b:
-    #   with pd.ExcelWriter(b) as writer:
-    #         df1 = pd.DataFrame(reval_file.objects.filter(quarter=quarter).values_list(*columns), columns=columns)
-        
-    #         df1.to_excel(writer, index=False, header=alias, sheet_name="Sheet1")
-    #         sheet_names = writer.sheets.get_sheet_names()
-    #         if sheet_names:
-    #             worksheet = writer.sheets[sheet_names[0]]  # Access the first sheet
-    #             # Rest of your code
-    #         else:
-    #             print("No sheets found")
-    #         # workbook = writer.book
-    #         # money = workbook.add_format({'num_format': '$#,##0.0000'})
-
-    #         # # header_format_3 = workbook.add_format({
-    #         # 'bold': True,
-    #         # 'text_wrap': True,
-    #         # 'valign': 'top',
-    #         # 'fg_color': 'green',
-    #         # 'color':'white',
-    #         # 'border': 1})
-
-    #         # worksheet.set_column('S:T',None,header_format_3)
-    #         # worksheet.data_validation('S1:S1048576', {'validate': 'list', 'source': ['Approved', 'Rejected']})
-    #         # writer.save()
-
-    #         response = HttpResponse(b.getvalue(), content_type='application/vnd.ms-excel')
-    #         response['Content-Disposition'] = f'inline; filename="ICC Quanta InESS Bulk upload ' + type + ' Parts.xlsx"'
-    #         return response
-
-
-
 
 
 # def download_icc_quanta_template(request):
@@ -167,4 +168,104 @@ def download_Iness_bulkapproval(request, quarter="Q1"):
 #     response['X-Sendfile'] = download_file
 #     response['Content-Length'] = os.stat(download_file).st_size
 #     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('Quanta ICC Template.xlsx')
-#     return response 
+#     return response
+
+
+def QP_iness_bulk_upload(request):
+
+    quarter = request.POST.get("quarter")
+    print(quarter)
+    file = request.FILES["QP_upload_file"]
+    qp_data = reval_file.objects.filter(quarter=quarter)
+    # df = pd.read_excel(excel)
+
+    data = pd.read_excel(file)
+    data.fillna("", inplace=True)
+
+    for qp in qp_data:
+
+        # df = data.replace({0: None, 'nan': ''})
+        partnumber = data[(data["pn"] == qp.pn) & (data["quarter"] == qp.quarter)]
+
+        approval_status = ""
+        comments = ""
+
+        if not partnumber.empty:
+            iness_approval_status = partnumber["status"].values[0]
+            iness_comments = partnumber["approval_comments"].values[0]
+
+            # Convert NaN values to empty strings
+            approval_status = (
+                "" if pd.isna(iness_approval_status) else str(iness_approval_status)
+            )
+            comments = "" if pd.isna(iness_comments) else str(iness_comments)
+
+        # Update the database with the retrieved values
+        data_quanta = reval_file.objects.filter(id=qp.id, quarter=quarter).update(
+            status=approval_status, approval_comments=comments
+        )
+
+    return redirect("/")
+
+def qp_bulk_attchments(request):
+    try:
+        if request.method == "POST":
+            files = request.FILES.getlist('bulk_files')
+            quarter = request.POST.get("quarter")
+            for i in files:
+               
+                fs = FileSystemStorage()
+                name =  "_" + \
+                randomString(10) + "." + \
+                    re.sub('[^A-Za-z0-9\n\.]+', '', i.name)
+                filename = fs.save('Files/'+name, i)
+                # print(i.name.split('.')[0],"nmmm")
+                ssr=i.name.split('.')[0]
+ 
+                bulk_files = bulk_attchements(
+                   
+                    file=ssr, 
+                    quarter=quarter,
+                    stored_name=name
+                )
+                bulk_files.save()
+       
+
+        return redirect("/")
+    except Exception as e:
+     
+        return HttpResponse("Error occurred while processing the request.")
+
+
+import random
+import string
+
+def randomString(length):
+    letters_and_digits = string.ascii_letters + string.digits
+    result_str = ''.join(random.choice(letters_and_digits) for i in range(length))
+    return result_str
+
+
+
+
+
+def bulk_files(request):
+    try:
+        data=bulk_attchements.objects.all().values()
+  
+        return JsonResponse({"data":list(data)},safe=True)
+    except Exception as e:
+        pass
+    
+    
+    
+def downloadmdfile(request, id):
+    file = bulk_attchements.objects.filter(id=id).first()
+    
+    fs = FileSystemStorage()
+    if fs.exists('Files/'+file.stored_name):
+        fh = fs.open('Files/'+file.stored_name)
+        response = HttpResponse(
+        fh.read(), content_type="application/image/text")
+        response['Content-Disposition'] = 'inline; filename=' + file.stored_name
+        return response

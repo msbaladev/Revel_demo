@@ -58,7 +58,7 @@
     }
     .badge-done {
       background-color: #c3e6cb;
-      color: #155724;
+      color: #ec3c30;
     }
     .badge-pending {
       background-color: #fff3cd;
@@ -71,6 +71,8 @@
     .badge {
       font-size: 0.875em;
     }
+
+ 
   </style>
   </head>
   <body>
@@ -662,15 +664,21 @@
                   <h2>Portfolio</h2>
                 </div>
 
+
+                    
+    <div class="content">
+      {% block content %}{% endblock %}
+  </div>
+      
                 <div class="right">
                   <div class="select-style-1 ">
-                    <div class="select-position select-sm " style="padding: ;">
-                      <select class="">
+                    <div class="select-position select-sm ">
+                      <select class="" id="quarter">
                         <option value="" disabled>Quarter</option>
-                        <option value="">Q1</option>
-                        <option value="">Q2</option>
-                        <option value="">Q3</option>
-                        <option value="">Q4</option>
+                        <option value="Q1" selected>Q1</option>
+                        <option value="Q2">Q2</option>
+                        <option value="Q3">Q3</option>
+                        <option value="Q4">Q4</option>
                       </select>
                     </div>
                   </div>
@@ -731,8 +739,8 @@
               <!-- End Icon Cart -->
             </div>
             <!-- End Col -->
-            <div class="col-xl-3 col-lg-4 col-sm-6">
-              <div class="icon-card mb-30">
+            <div class="col-xl-3 col-lg-4 col-sm-6"  data-toggle="modal" data-target="#Bulk_Attachment_Modal">
+              <div class="icon-card mb-30" style="cursor: pointer;">
                 <div class="icon primary">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m18.375 12.739-7.693 7.693a4.5 4.5 0 0 1-6.364-6.364l10.94-10.94A3 3 0 1 1 19.5 7.372L8.552 18.32m.009-.01-.01.01m5.699-9.941-7.81 7.81a1.5 1.5 0 0 0 2.112 2.13" />
@@ -770,50 +778,53 @@
                   <div class="left">
                     <h6 class="text-medium mb-30">Revel</h6>
                   </div>
-                  <div class="right">
-                    <div class="select-style-1">
-                      <div class="select-position select-sm">
-                        <select class="light-bg">
-                          <option value="">Today</option>
-                          <option value="">Yesterday</option>
-                        </select>
-                      </div>
+                  
+                <div class="right">
+                  <div class="select-style-1 ">
+                    <div class="select-position select-sm ">
+                      
+                      <select class="">
+                        <option value="" disabled>Quarter</option>
+                        <option value="Q1">Q1</option>
+                        <option value="Q2">Q2</option>
+                        <option value="Q3">Q3</option>
+                        <option value="Q4">Q4</option>
+                      </select>
                     </div>
-                    <!-- end select -->
                   </div>
+                  <!-- end select -->
+                </div>
                 </div>
                 <!-- End Title -->
               
-                <div class="container col-12">
+                <div class="container col-12" style="overflow-x: scroll; width: 100%;">
                   <!-- <h2>Revel</h2> -->
                   
                   <table class="table table-hover">
                     <thead>
                       <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Project</th>
+                       
+                        <th id="pn" style="width: 300px;">part no</th>
+                        <th >qty</th>
+                        <th style="padding: 13px 50px;">item</th>
                         <th>Status</th>
-                        <th>usd</th>
-                        <th>Action</th>
+                        <th>Ext price</th>
+                        <th>Scrap</th>
+                        <th style="padding: 13px 60px;" class=" d-flex" > <span>Unit_Freight</span></th>
+                        <th>Unit Price</th>
+                        <th>USD</th>
+                        <th>Remark</th>
+                        <th>Description</th>
+                        <th>status</th>
+                        <th>Comments</th>
+
+
+
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="TABLE" class="">
                    
                         
-                          {% for i in data %}
-                          <tr>
-                            <td>{{i.id}}</td>
-                            <td><img src="path_to_image1.jpg" alt="Avatar" class="table" /> </td>
-                            <td>{{i.item}}</td>
-                            <td>{{i.pn}}</td>
-                            <td>{{i.qty}}</td>
-                            <td>{{i.usd}}</td>
-                            <td><button class="btn btn-danger btn-sm">Delete</button></td>
-                            </tr>
-                            {% endfor %}
-                          </tr>
                         
                    
                      
@@ -1419,5 +1430,81 @@
       });
       // =========== chart four end
     </script>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<script>
+    $(document).ready(() => {
+     
+      let quarter="Q1"
+
+      function getData(){
+        console.log(quarter);
+        $.ajax({
+          type: "POST",
+          url: "{% url 'reval_data' %}",
+          data: { quarter: quarter ,'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+       
+          success: (response) => {
+
+            console.log(response);
+            $('#TABLE').empty()
+
+          response.data.map(({id,quarter,description,ext_price,item,pn,qty,remark,scrap,status,unit_freight,unit_price,usd,approval_comments})=>{
+
+            const table=`
+              <tr>
+             <td > ${pn}</td>
+              <td  > ${qty}</td>
+               <td style=" " class="d-flex justify-content-center"> ${item}</td>
+              <td > ${ext_price}</td>
+              <td > ${scrap}</td>
+
+                <td > ${unit_freight}</td>
+              <td > ${unit_price}</td>
+
+              <td > ${usd}</td>
+          
+              <td class="bg-primary d-flex" style="  font-size: 14px; padding:0px 150px; width:100%;"><p class="bg-danger w-100 " style="padding:0 100px ;">helllo evryone howjerewoifowe wrbwhbrhbesfhbes hjrvwhjebrhjewr</p></td>
+                <td > jgjgk</td>
+              <td > ${status}</td>
+            
+            
+              <td> ${approval_comments}</td>
+              </tr>
+            `
+
+    
+             
+              $("#TABLE").append(table)
+
+          })
+
+
+
+          },
+          error: (error) => {
+            console.error("Error:", error);
+          }
+        });
+      }
+
+      $('#quarter').change(() => {
+       quarter = $("#quarter").val();
+       getData()
+     
+      });
+
+      getData()
+       
+
+
+   
+      });
+ 
+  
+</script>
+
+
   </body>
 </html>
