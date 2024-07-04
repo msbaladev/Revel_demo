@@ -1,11 +1,14 @@
 from io import BytesIO
 import mimetypes
+import os
 import re
 from wsgiref.types import FileWrapper
-from django.http import HttpResponse, JsonResponse
+from django.http import FileResponse, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
+from django.urls import reverse
 import pandas as pd
 from django.utils.encoding import smart_str
+from portfolio.templatetags.quality_tags import *
 
 from iness import settings
 from .models import *
@@ -16,17 +19,16 @@ from django.core.files.storage import FileSystemStorage
 
 
 def home(request):
-    quarter=request.POST.get('quarter')
-    if quarter== None:
-        quarter='Q1'
-    else:
-        quarter=quarter
+    quarter=Current_quarter()
+    return redirect(reverse('dashboard', kwargs={'quarter': quarter}))
 
-   
+
+
+def dashboard(request,quarter):
     data = reval_file.objects.filter(quarter=quarter).values()
     print(quarter,"]][]][  ]")
     # return JsonResponse({"data":list(data)},safe=False)
-    return render(request, "main.html", {"data": data})
+    return render(request, "main.html", {"quarter":quarter,"data": data})
 
 
 def signin(request):
@@ -86,7 +88,7 @@ def reval_data(request):
 # from openpyxl.worksheet.datavalidation import data
 
 
-def download_Iness_bulkapproval(request, quarter="Q1"):
+def download_Iness_bulkapproval(request, quarter):
     columns = [
         "item",
         "quarter",
@@ -160,14 +162,30 @@ def download_Iness_bulkapproval(request, quarter="Q1"):
         return response
 
 
-# def download_icc_quanta_template(request):
-#     download_file = settings.RESOURCES_ROOT+'/'+'Quanta ICC Template.xlsx'
+
+def download_template(request):
+    download_file = os.path.join(settings.RESOURCES_ROOT, 'Rework Input template.xlsx')
+
+    file_mimetype, _ = mimetypes.guess_type(download_file)
+    print("download file", file_mimetype)
+
+    response = FileResponse(open(download_file, 'rb'), content_type=file_mimetype)
+    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('Rework Input template.xlsx')
+    response['Content-Length'] = os.path.getsize(download_file)
+
+    return response
+
+
+
+
+# def download_icc_quanta_waterfall_template(request):
+#     download_file = settings.RESOURCES_ROOT+'/'+'Rework Input template.xlsx'
 #     file_mimetype = mimetypes.guess_type(download_file)
 #     file_wrapper = FileWrapper(open(download_file, 'rb'))
 #     response = HttpResponse(file_wrapper, content_type=file_mimetype)
 #     response['X-Sendfile'] = download_file
 #     response['Content-Length'] = os.stat(download_file).st_size
-#     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('Quanta ICC Template.xlsx')
+#     response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('Rework Input template.xlsx')
 #     return response
 
 

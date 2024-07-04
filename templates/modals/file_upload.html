@@ -36,7 +36,23 @@
             margin-top: 10px;
         }
 
-        .file-details .file-name {
+        .file-details-1 .file-name-1{
+            font-size: 14px;
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .file-details-2 .file-name-2 {
+            font-size: 14px;
+            background-color: #e9ecef;
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+        .file-details-3 .file-name-3 {
             font-size: 14px;
             background-color: #e9ecef;
             padding: 5px 10px;
@@ -65,39 +81,40 @@
                         <div class="right" style="width: 100px; margin-right: 10px; margin-top: 20px;">
                             <div class="select-style-1 " style=" background-color: white;">
                               <div class="select-position select-sm " >
-                                <select class="" name="quarter">
-                                  <option value="" disabled>Quarter</option>
-                                  <option value="Q1">Q1</option>
-                                  <option value="Q2">Q2</option>
-                                  <option value="Q3">Q3</option>
-                                  <option value="Q4">Q4</option>
-                                </select>
+                                <select class="" id="quarter" name="quarter"  required>
+                                    <option value="" disabled>Quarter</option>
+                                    <option value="{{ prev_qtr.1 }}" {%if prev_qtr.1 == quarter %} selected{% endif %}>{{ prev_qtr.2 }} to {{ prev_qtr.1 }}</option>
+                                    <option value="{{ prev_qtr.0 }}" {%if prev_qtr.0 == quarter %} selected{% endif %}>{{ prev_qtr.1 }} to {{ prev_qtr.0 }}</option>
+                                    <option value="{{ cur_qtr }}" {%if cur_qtr == quarter  %} selected {% endif %} >{{ prev_qtr.0 }} to {{ cur_qtr }}</option>
+                                    <option value="{{ next_qtr.0 }}"  {%if next_qtr.0 == quarter  %} selected {% endif %} >{{ cur_qtr }} to {{ next_qtr.0 }}</option>
+                                    </select>
                               </div>
                             </div>
-                            <!-- end select -->
+                        
                           </div>
                        
                     </div>
                     <div class="modal-body ">
                         <div class="drop-zone" id="dropZone">
-                            <input type="file" id="fileInput" name="file" >
+                            <input type="file" id="fileInput1" name="file" >
                             <div class="upload-icon">
                                 <img src="https://img.icons8.com/material-outlined/48/000000/upload.png" alt="Upload Icon">
                             </div>
                             <p><span class="text-primary">Click to upload</span></p>
                            
                         </div>
-                        <div class="file-details" id="fileDetails"></div>
+                        <div class="file-details-1" id="fileDetails1"></div>
                     </div>
                     <div class="modal-footer ">
-                        <div class="d-flex align-items-center bg-light px-3 " style=" cursor: pointer; border-radius: 30px; margin-right: 80px;">
+                      
+                        <a href="{% url 'download_template' %}" class="d-flex align-items-center bg-light px-3 " style=" cursor: pointer; border-radius: 30px; margin-right: 80px;">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-2" style="width: 30px;">
                                 <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
                                 <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
                               </svg>
                               
                                <h6 class="" style="margin-top: 5px;">download</h6>
-                        </div>
+                            </a>
                         <button type="button" class="btn btn-light " style="padding: 5px 30px; border-radius: 20px;" data-dismiss="modal">Cancel</button>
                         <button type="submit"  class="btn btn-primary" style="padding: 5px 30px; border-radius: 20px; cursor: pointer;" id="continueButton" >Submit</button>
                     </div>
@@ -125,7 +142,7 @@
                         <h5 class="modal-title" style="margin-left: 10px;" id="uploadModalLabel">Bulk Approval</h5>
 
 
-                        <a href='{% url "download_Iness_bulkapproval" %}'  style=" cursor: pointer; border-radius: 30px; ">
+                        <a href='{% url "download_Iness_bulkapproval" quarter %}'  style=" cursor: pointer; border-radius: 30px; ">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-2" style="width: 30px;">
                                 <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
                                 <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
@@ -134,20 +151,20 @@
                                <h6 class="" style="margin-top: 5px;"></h6>
                             </a>
       
-                        <div class="right" style="width: 100px; margin-right: 10px; margin-top: 20px;">
-                            <div class="select-style-1 " style=" background-color: white;">
-                              <div class="select-position select-sm " >
-                                <select class="" name="quarter">
-                                  <option value="" disabled>Quarter</option>
-                                  <option value="Q1">Q1</option>
-                                  <option value="Q2">Q2</option>
-                                  <option value="Q3">Q3</option>
-                                  <option value="Q4">Q4</option>
-                                </select>
+                            <div class="right" style="width: 100px; margin-right: 10px; margin-top: 20px;">
+                                <div class="select-style-1 " style=" background-color: white;">
+                                  <div class="select-position select-sm " >
+                                    <select class="" id="quarter" name="quarter"  required>
+                                        <option value="" disabled>Quarter</option>
+                                        <option value="{{ prev_qtr.1 }}" {%if prev_qtr.1 == quarter %} selected{% endif %}>{{ prev_qtr.2 }} to {{ prev_qtr.1 }}</option>
+                                        <option value="{{ prev_qtr.0 }}" {%if prev_qtr.0 == quarter %} selected{% endif %}>{{ prev_qtr.1 }} to {{ prev_qtr.0 }}</option>
+                                        <option value="{{ cur_qtr }}" {%if cur_qtr == quarter  %} selected {% endif %} >{{ prev_qtr.0 }} to {{ cur_qtr }}</option>
+                                        <option value="{{ next_qtr.0 }}"  {%if next_qtr.0 == quarter  %} selected {% endif %} >{{ cur_qtr }} to {{ next_qtr.0 }}</option>
+                                        </select>
+                                  </div>
+                                </div>
+                            
                               </div>
-                            </div>
-                            <!-- end select -->
-                          </div>
                        
                     </div>
                     <div class="modal-body ">
@@ -159,7 +176,7 @@
                             <p><span class="text-primary">Click to upload</span></p>
                            
                         </div>
-                        <div class="file-details" id="fileDetails2"></div>
+                        <div class="file-details-2" id="fileDetails2"></div>
                     </div>
                     <div class="modal-footer ">
                         
@@ -217,7 +234,7 @@
                             <p><span class="text-primary">Click to upload</span></p>
                            
                         </div>
-                        <div class="file-details" id="fileDetails3"></div>
+                        <div class="file-details-3" id="fileDetails3"></div>
                     </div>
                     <div class="modal-footer ">
 
@@ -283,8 +300,8 @@
  
     <script>
         const dropZone = document.getElementById('dropZone');
-        const fileInput = document.getElementById('fileInput');
-        const fileDetails = document.getElementById('fileDetails');
+        const fileInput = document.getElementById('fileInput1');
+        const fileDetails = document.getElementById('fileDetails1');
         const continueButton = document.getElementById('continueButton');
 
         dropZone.addEventListener('click', () => fileInput.click());
@@ -292,7 +309,9 @@
         fileInput.addEventListener('change', (event) => {
             if (event.target.files.length > 0) {
                 const file = event.target.files[0];
-                displayFileDetails(file);
+                // console.log(file,"111111111111111111");
+                // alert(file.name)
+                fileDetails.innerHTML = `<div class="file-name-1">${file.name}</div>`;
             }
         });
 
@@ -317,13 +336,13 @@
 
         function displayFileDetails(file) {
             console.log(file);
-            fileDetails.innerHTML = `<div class="file-name">${file.name}</div>`;
+            fileDetails.innerHTML = `<div class="file-name-1">${file.name}</div>`;
             continueButton.disabled = false;
         }
     </script> 
 
 
-  <script>
+ <script>
         const dropZone_2= document.getElementById('dropZone2');
         const fileInput_2 = document.getElementById('fileInput2');
         const fileDetails_2 = document.getElementById('fileDetails2');
@@ -334,7 +353,7 @@
         fileInput_2.addEventListener('change', (event) => {
             if (event.target.files.length > 0) {
                 const file = event.target.files[0];
-                displayFileDetails(file);
+                fileDetails_2.innerHTML = `<div class="file-name-2">${file.name}</div>`;
             }
         });
 
@@ -358,15 +377,15 @@
         });
 
         function displayFileDetails(file) {
-            console.log(file);
-            fileDetails_2.innerHTML = `<div class="file-name">${file.name}</div>`;
+            console.log(file,"222222222222222222222");
+            fileDetails_2.innerHTML = `<div class="file-name-2">${file.name}</div>`;
             continueButton_2.disabled = false;
         }
 
     </script> 
 
 
-
+  
 <script>
     const dropZone_3= document.getElementById('dropZone3');
     const fileInput_3 = document.getElementById('fileInput3');
@@ -402,8 +421,8 @@
     });
 
     function displayFileDetails(file) {
-        console.log(file);
-        fileDetails_3.innerHTML = `<div class="file-name">${file.name}</div>`;
+        console.log(file,"33333333333333");
+        fileDetails_2.innerHTML = `<div class="file-name-2">${file.name}</div>`;
         continueButton_3.disabled = false;
     }
 </script> 
