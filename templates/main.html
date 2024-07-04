@@ -16,6 +16,8 @@
       href="https://inesssolutions.com/newmenu/inesslogo.png"
       type="image/x-icon"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <title>Iness</title>
 
     <!-- ========== All CSS files linkup ========= -->
@@ -859,6 +861,23 @@
                             </tbody>
                           </table>
                         </div>
+                        <div class="pagination">
+                          <span class="step-links">
+                              {% if data.has_previous %}
+                                  <a href="?page=1"><i class="fa-solid fa-backward"></i></i></a>
+                                  <a href="?page={{ data.previous_page_number }}"><i class="fa-solid fa-arrow-left"></i></a>
+                              {% endif %}
+                  
+                              <span class="current">
+                                  Page {{ data.number }} of {{ data.paginator.num_pages }}.
+                              </span>
+                  
+                              {% if data.has_next %}
+                                  <a href="?page={{ data.next_page_number }}"><i class="fa-solid fa-arrow-right"></i></a>
+                                  <a href="?page={{ data.paginator.num_pages }}"><i class="fa-solid fa-forward"></i></a>
+                              {% endif %}
+                          </span>
+                      </div>
                       </div>
                       
                     </div>

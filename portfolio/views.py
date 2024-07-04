@@ -9,6 +9,7 @@ from django.urls import reverse
 import pandas as pd
 from django.utils.encoding import smart_str
 from portfolio.templatetags.quality_tags import *
+from django.core.paginator import Paginator
 
 from iness import settings
 from .models import *
@@ -26,9 +27,15 @@ def home(request):
 
 def dashboard(request,quarter):
     data = reval_file.objects.filter(quarter=quarter).values()
+    print(data,"ppp")
+    print(Current_quarter)
+    paginator = Paginator(data, 10)  # Show 10 books per page.
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    # return render(request, 'main.html', {'page_obj': page_obj})
     print(quarter,"]][]][  ]")
-    # return JsonResponse({"data":list(data)},safe=False)
-    return render(request, "main.html", {"quarter":quarter,"data": data})
+    return render(request, "main.html", {"quarter":quarter,"data": page_obj})
 
 
 def signin(request):
