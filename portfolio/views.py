@@ -20,22 +20,21 @@ from django.core.files.storage import FileSystemStorage
 
 
 def home(request):
-    quarter=Current_quarter()
-    return redirect(reverse('dashboard', kwargs={'quarter': quarter}))
+    quarter = Current_quarter()
+    return redirect(reverse("dashboard", kwargs={"quarter": quarter}))
 
 
-
-def dashboard(request,quarter):
+def dashboard(request, quarter):
     data = reval_file.objects.filter(quarter=quarter).values()
-    print(data,"ppp")
+    print(data, "ppp")
     print(Current_quarter)
     paginator = Paginator(data, 10)  # Show 10 books per page.
 
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     # return render(request, 'main.html', {'page_obj': page_obj})
-    print(quarter,"]][]][  ]")
-    return render(request, "main.html", {"quarter":quarter,"data": page_obj})
+    print(quarter, "]][]][  ]")
+    return render(request, "main.html", {"quarter": quarter, "data": page_obj})
 
 
 def signin(request):
@@ -52,14 +51,14 @@ def file_upload(request):
 
             data.fillna("0", inplace=True)
             # data.dropna(subset=['Site', 'PN'],how='any',inplace=True)
-        
+
             # data=data.replace({np.NaN: None})
             # delete= icc_quanta.objects.filter(quarter = quarter).delete()
             row_iter = data.iterrows()
             # print("111")
             bulk_update = []
             for index, row in row_iter:
-           
+
                 revel_data = reval_file(
                     quarter=quarter,
                     item=row["Item"],
@@ -76,20 +75,19 @@ def file_upload(request):
                 revel_data.save()
             return redirect("/")
     except:
-        pass
+        return JsonResponse({"status": "something went wrong!!!!!!!"})
 
 
 def reval_data(request):
-    quarter=request.POST.get('quarter')
-    if quarter== None:
-        quarter='Q1'
+    quarter = request.POST.get("quarter")
+    if quarter == None:
+        quarter = "Q1"
     else:
-        quarter=quarter
+        quarter = quarter
 
-   
     data = reval_file.objects.filter(quarter=quarter).values()
-    print(quarter,"]][]][  ]")
-    return JsonResponse({"data":list(data)},safe=False)
+    print(quarter, "]][]][  ]")
+    return JsonResponse({"data": list(data)}, safe=False)
 
 
 # from openpyxl.worksheet.datavalidation import data
@@ -169,20 +167,19 @@ def download_Iness_bulkapproval(request, quarter):
         return response
 
 
-
 def download_template(request):
-    download_file = os.path.join(settings.RESOURCES_ROOT, 'Rework Input template.xlsx')
+    download_file = os.path.join(settings.RESOURCES_ROOT, "Rework Input template.xlsx")
 
     file_mimetype, _ = mimetypes.guess_type(download_file)
     print("download file", file_mimetype)
 
-    response = FileResponse(open(download_file, 'rb'), content_type=file_mimetype)
-    response['Content-Disposition'] = 'attachment; filename=%s' % smart_str('Rework Input template.xlsx')
-    response['Content-Length'] = os.path.getsize(download_file)
+    response = FileResponse(open(download_file, "rb"), content_type=file_mimetype)
+    response["Content-Disposition"] = "attachment; filename=%s" % smart_str(
+        "Rework Input template.xlsx"
+    )
+    response["Content-Length"] = os.path.getsize(download_file)
 
     return response
-
-
 
 
 # def download_icc_quanta_waterfall_template(request):
@@ -232,65 +229,61 @@ def QP_iness_bulk_upload(request):
 
     return redirect("/")
 
+
 def qp_bulk_attchments(request):
     try:
         if request.method == "POST":
-            files = request.FILES.getlist('bulk_files')
+            files = request.FILES.getlist("bulk_files")
             quarter = request.POST.get("quarter")
             for i in files:
-               
+
                 fs = FileSystemStorage()
-                name =  "_" + \
-                randomString(10) + "." + \
-                    re.sub('[^A-Za-z0-9\n\.]+', '', i.name)
-                filename = fs.save('Files/'+name, i)
+                name = (
+                    "_"
+                    + randomString(10)
+                    + "."
+                    + re.sub("[^A-Za-z0-9\n\.]+", "", i.name)
+                )
+                filename = fs.save("Files/" + name, i)
                 # print(i.name.split('.')[0],"nmmm")
-                ssr=i.name.split('.')[0]
- 
+                ssr = i.name.split(".")[0]
+
                 bulk_files = bulk_attchements(
-                   
-                    file=ssr, 
-                    quarter=quarter,
-                    stored_name=name
+                    file=ssr, quarter=quarter, stored_name=name
                 )
                 bulk_files.save()
-       
 
         return redirect("/")
     except Exception as e:
-     
+
         return HttpResponse("Error occurred while processing the request.")
 
 
 import random
 import string
 
+
 def randomString(length):
     letters_and_digits = string.ascii_letters + string.digits
-    result_str = ''.join(random.choice(letters_and_digits) for i in range(length))
+    result_str = "".join(random.choice(letters_and_digits) for i in range(length))
     return result_str
-
-
-
 
 
 def bulk_files(request):
     try:
-        data=bulk_attchements.objects.all().values()
-  
-        return JsonResponse({"data":list(data)},safe=True)
+        data = bulk_attchements.objects.all().values()
+
+        return JsonResponse({"data": list(data)}, safe=True)
     except Exception as e:
         pass
-    
-    
-    
+
+
 def downloadmdfile(request, id):
     file = bulk_attchements.objects.filter(id=id).first()
-    
+
     fs = FileSystemStorage()
-    if fs.exists('Files/'+file.stored_name):
-        fh = fs.open('Files/'+file.stored_name)
-        response = HttpResponse(
-        fh.read(), content_type="application/image/text")
-        response['Content-Disposition'] = 'inline; filename=' + file.stored_name
+    if fs.exists("Files/" + file.stored_name):
+        fh = fs.open("Files/" + file.stored_name)
+        response = HttpResponse(fh.read(), content_type="application/image/text")
+        response["Content-Disposition"] = "inline; filename=" + file.stored_name
         return response
