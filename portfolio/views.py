@@ -10,6 +10,7 @@ import pandas as pd
 from django.utils.encoding import smart_str
 from portfolio.templatetags.quality_tags import *
 from django.core.paginator import Paginator
+import logging
 
 from iness import settings
 from .models import *

@@ -1,8 +1,14 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include SweetAlert -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
     <title>File Upload Modal</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -66,60 +72,51 @@
         <!-- Button to Open the Modal -->
      
         <!-- The Modal -->
-        <div class="modal fade rounded-sm" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true"">
-            <div class="modal-dialog " style="border-radius: 100px;;" >
-              <form  action="{% url 'file-upload' %}" id="quality_upoload"
-              method="POST"
-              class="form"
-              enctype="multipart/form-data">
-
-              {% csrf_token %}
-                <div class="modal-content" >
-                    <div class="modal- bg-light d-flex justify-content-between align-items-center " >
-                        <h5 class="modal-title" style="margin-left: 10px;" id="uploadModalLabel">Upload Document</h5>
-      
-                        <div class="right" style="width: 100px; margin-right: 10px; margin-top: 20px;">
-                            <div class="select-style-1 " style=" background-color: white;">
-                              <div class="select-position select-sm " >
-                                <select class="" id="quarter" name="quarter"  required>
-                                    <option value="" disabled>Quarter</option>
-                                    <option value="{{ prev_qtr.1 }}" {%if prev_qtr.1 == quarter %} selected{% endif %}>{{ prev_qtr.2 }} to {{ prev_qtr.1 }}</option>
-                                    <option value="{{ prev_qtr.0 }}" {%if prev_qtr.0 == quarter %} selected{% endif %}>{{ prev_qtr.1 }} to {{ prev_qtr.0 }}</option>
-                                    <option value="{{ cur_qtr }}" {%if cur_qtr == quarter  %} selected {% endif %} >{{ prev_qtr.0 }} to {{ cur_qtr }}</option>
-                                    <option value="{{ next_qtr.0 }}"  {%if next_qtr.0 == quarter  %} selected {% endif %} >{{ cur_qtr }} to {{ next_qtr.0 }}</option>
-                                    </select>
-                              </div>
+        <!-- The Modal -->
+        <div class="modal fade rounded-sm" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="border-radius: 100px;">
+                <form action="{% url 'file-upload' %}" id="upload_file" method="POST" class="form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal- bg-light d-flex justify-content-between align-items-center">
+                            <h5 class="modal-title" style="margin-left: 10px;" id="uploadModalLabel">Upload Document</h5>
+                            <div class="right" style="width: 100px; margin-right: 10px; margin-top: 20px;">
+                                <div class="select-style-1" style="background-color: white;">
+                                    <div class="select-position select-sm">
+                                        <select class="" id="quarter" name="quarter" required>
+                                            <option value="" disabled>Quarter</option>
+                                            <option value="{{ prev_qtr.1 }}" {% if prev_qtr.1 == quarter %} selected{% endif %}>{{ prev_qtr.2 }} to {{ prev_qtr.1 }}</option>
+                                            <option value="{{ prev_qtr.0 }}" {% if prev_qtr.0 == quarter %} selected{% endif %}>{{ prev_qtr.1 }} to {{ prev_qtr.0 }}</option>
+                                            <option value="{{ cur_qtr }}" {% if cur_qtr == quarter %} selected{% endif %}>{{ prev_qtr.0 }} to {{ cur_qtr }}</option>
+                                            <option value="{{ next_qtr.0 }}" {% if next_qtr.0 == quarter %} selected{% endif %}>{{ cur_qtr }} to {{ next_qtr.0 }}</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                        
-                          </div>
-                       
-                    </div>
-                    <div class="modal-body ">
-                        <div class="drop-zone" id="dropZone">
-                            <input type="file" id="fileInput1" name="file" >
-                            <div class="upload-icon">
-                                <img src="https://img.icons8.com/material-outlined/48/000000/upload.png" alt="Upload Icon">
-                            </div>
-                            <p><span class="text-primary">Click to upload</span></p>
-                           
                         </div>
-                        <div class="file-details-1" id="fileDetails1"></div>
-                    </div>
-                    <div class="modal-footer ">
-                      
-                        <a href="{% url 'download_template' %}" class="d-flex align-items-center bg-light px-3 " style=" cursor: pointer; border-radius: 30px; margin-right: 80px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-2" style="width: 30px;">
-                                <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
-                                <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
-                              </svg>
-                              
-                               <h6 class="" style="margin-top: 5px;">download</h6>
+                        <div class="modal-body">
+                            <div class="drop-zone" id="dropZone">
+                                <input type="file" id="fileInput1" name="file">
+                                <div class="upload-icon">
+                                    <img src="https://img.icons8.com/material-outlined/48/000000/upload.png" alt="Upload Icon">
+                                </div>
+                                <p><span class="text-primary">Click to upload</span></p>
+                            </div>
+                            <div class="file-details-1" id="fileDetails1"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <a href="{% url 'download_template' %}" class="d-flex align-items-center bg-light px-3" style="cursor: pointer; border-radius: 30px; margin-right: 80px;">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-2" style="width: 30px;">
+                                    <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
+                                    <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+                                </svg>
+                                <h6 class="" style="margin-top: 5px;">download</h6>
                             </a>
-                        <button type="button" class="btn btn-light " style="padding: 5px 30px; border-radius: 20px;" data-dismiss="modal">Cancel</button>
-                        <button type="submit"  class="btn btn-primary" style="padding: 5px 30px; border-radius: 20px; cursor: pointer;" id="continueButton" >Submit</button>
+                            <button type="button" class="btn btn-light" style="padding: 5px 30px; border-radius: 20px;" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-primary" style="padding: 5px 30px; border-radius: 20px; cursor: pointer;" id="continueButton">Submit</button>
+                        </div>
                     </div>
-                </div>
-              </form>
+                </form>
             </div>
         </div>
     </div>
@@ -474,6 +471,73 @@
 
 
 
+
+<script>
+    $(document).ready(function() {
+        $("#upload_file").submit(function(e) {
+            e.preventDefault();
+    
+            swal({
+                title: "PPV File Uploading...",
+                text: "Please wait ",
+                content: {
+                    element: "img",
+                    attributes: {
+                        src: "{% static 'assets/images/loading.gif' %}"
+                    }
+                },
+                buttons: false,
+                closeOnClickOutside: false,
+                closeOnEsc: false,
+            });
+    
+            var data = new FormData(this);
+    
+            $.ajax({
+                url: $(this).attr("action"),
+                data: data,
+                type: $(this).attr("method"),
+                processData: false,
+                contentType: false,
+                cache: false,
+                timeout: 3000000,
+                success: function(response) {
+                    swal.close();
+                    if (response.status === "success") {
+                        swal({
+                            title: "Success!",
+                            icon: "success",
+                            text: "Jabil PPV File Uploaded Successfully",
+                            timer: 5000,
+                            buttons: false
+                        }).then(() => {
+                            location.reload(true);
+                        });
+                    } else {
+                        swal({
+                            title: "Error!",
+                            icon: "error",
+                            text: response.message || "An error occurred while uploading the file. Please try again.",
+                            timer: 5000,
+                            buttons: false
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    swal.close();
+                    console.log("Error:", xhr, status, error);
+                    swal({
+                        title: "Whoops!",
+                        icon: "error",
+                        text: "Problem while uploading file. Kindly check the headers of the uploaded file or contact admin for more info!",
+                        timer: 5000,
+                        buttons: false
+                    });
+                }
+            });
+        });
+    });
+    </script>
 
 </body>
 </html>
