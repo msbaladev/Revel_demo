@@ -131,7 +131,7 @@
     <!-- ======== sidebar-nav end =========== -->
 
     <!-- ======== main-wrapper start =========== -->
-    <main class="main-wrapper" style="width:max-content; margin: auto;">
+    <main class="main-" style="width: max-content; margin: auto;">
       <!-- ========== header start ========== -->
       <header class="header">
         <div class="container-fluid">
@@ -562,7 +562,7 @@
       
             <!-- End Col -->
             <div class="col-12">
-              <div class="card-style mb-30" >
+              <div class="card-style mb-30">
                 <div
                   class="title d-flex flex-wrap align-items-center justify-content-between"
                 >
@@ -574,72 +574,83 @@
                 </div>
                 <!-- End Title -->
               
-                <div class="main-container " style="font-size: smaller;">
+                <div class="main-container" style="font-size: smaller;">
                   <div class="pd-ltr-20 xs-pd-20-10">
                     <div class="min-height-200px">
                       
                       <!-- Simple Datatable start -->
-                      <div class="card-box mb-30" >
+                      <div class="card-box mb-30">
                         
                         <div class="pb-20">
-                          <table class="data-table table stripe hover nowrap" >
+                          <table class="data-table table stripe hover nowrap">
                             <thead>
                               <tr>
+                             
                                 <th class="table-plus datatable-nosort">part no</th>
-                                <th>qty</th>
-                                <th>item</th>
+                                <th >qty</th>
+                                <th  >item</th>
+                            
                                 <th>Ext_price</th>
                                 <th>Scrap</th>
-                                <th><span>Unit_Freight</span></th>
+                                <th  > <span>Unit_Freight</span></th>
                                 <th>Unit_Price</th>
-                                <th>USD</th>
+                                <th  >USD</th>
                                 <th>Remark</th>
                                 <th>Description</th>
                                 <th>status</th>
                                 <th>Comments</th>
+                                <!-- <th class="datatable-nosort">Action</th> -->
                               </tr>
                             </thead>
                             <tbody>
-                              {% for i in data %}
-                              <tr>
-                                <td>{{i.pn}}</td>
-                                <td>{{i.qty}}</td>
-                                <td>{{i.item}}</td>
-                                <td>{{i.ext_price}}</td>
-                                <td>{{i.scrap}}</td>
-                                <td>{{i.unit_freight}}</td>
-                                <td>{{i.unit_price}}</td>
-                                <td>{{i.usd}}</td>
-                                <td>{{i.remark}}</td>
-                                <td>{{i.description}}</td>
-                                <td>{{i.status}}</td>
-                                <td>{{i.Comments}}</td>
-                              </tr>
-                              {% endfor %}
+                            
+                                <!-- <td class="table-plus">Gloria F. Mead</td> -->
+                                {% for i in data %}
+                                <tr>
+                                  <td>{{i.pn}}</td>
+                                  <td>{{i.qty}} </td>
+                                  <td>{{i.item}}</td>
+                                  <td>{{i.ext_price}}</td>
+                                  <td>{{i.scrap}}</td>
+                                  <td>{{i.unit_freight}}</td>
+                                  <td>{{i.unit_price}}</td>
+                                  <td>{{i.usd}}</td>
+                                  <td>{{i.remark}}</td>
+                                  <td>{{i.description}}</td>
+                                  <td>{{i.status}}</td>
+                                  <td>{{i.Comments}}</td>
+                                
+                                  </tr>
+                                  {% endfor %}
+                              
+                          
                             </tbody>
                           </table>
                         </div>
                         <div class="pagination">
                           <span class="step-links">
-                            {% if data.has_previous %}
-                            <a href="?page=1"><i class="fa-solid fa-backward"></i></a>
-                            <a href="?page={{ data.previous_page_number }}"><i class="fa-solid fa-arrow-left"></i></a>
-                            {% endif %}
-                            <span class="current">
-                              Page {{ data.number }} of {{ data.paginator.num_pages }}.
-                            </span>
-                            {% if data.has_next %}
-                            <a href="?page={{ data.next_page_number }}"><i class="fa-solid fa-arrow-right"></i></a>
-                            <a href="?page={{ data.paginator.num_pages }}"><i class="fa-solid fa-forward"></i></a>
-                            {% endif %}
+                              {% if data.has_previous %}
+                                  <a href="?page=1"><i class="fa-solid fa-backward"></i></i></a>
+                                  <a href="?page={{ data.previous_page_number }}"><i class="fa-solid fa-arrow-left"></i></a>
+                              {% endif %}
+                  
+                              <span class="current">
+                                  Page {{ data.number }} of {{ data.paginator.num_pages }}.
+                              </span>
+                  
+                              {% if data.has_next %}
+                                  <a href="?page={{ data.next_page_number }}"><i class="fa-solid fa-arrow-right"></i></a>
+                                  <a href="?page={{ data.paginator.num_pages }}"><i class="fa-solid fa-forward"></i></a>
+                              {% endif %}
                           </span>
-                        </div>
+                      </div>
                       </div>
                       
                     </div>
+                  
                   </div>
                 </div>
-                
+
               </div>
             </div>
             <!-- End Col -->
@@ -757,15 +768,15 @@
 
           })
         })
-           
+           -->
+          
           
   
                                  
 
 
       
-</script>-->
-          
+</script>
 
 
 
