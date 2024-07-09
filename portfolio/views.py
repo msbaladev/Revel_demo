@@ -27,14 +27,14 @@ def home(request):
 
 def dashboard(request, quarter):
     data = reval_file.objects.filter(quarter=quarter).values()
-    print(data, "ppp")
-    print(Current_quarter)
+    
+    
     paginator = Paginator(data, 10)  # Show 10 books per page.
 
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     # return render(request, 'main.html', {'page_obj': page_obj})
-    print(quarter, "]][]][  ]")
+   
     return render(request, "main.html", {"quarter": quarter, "data": page_obj})
 
 
@@ -56,7 +56,7 @@ def file_upload(request):
             # data=data.replace({np.NaN: None})
             # delete= icc_quanta.objects.filter(quarter = quarter).delete()
             row_iter = data.iterrows()
-            # print("111")
+            print("111",data)
             bulk_update = []
             for index, row in row_iter:
 
@@ -87,7 +87,7 @@ def reval_data(request):
         quarter = quarter
 
     data = reval_file.objects.filter(quarter=quarter).values()
-    print(quarter, "]][]][  ]")
+  
     return JsonResponse({"data": list(data)}, safe=False)
 
 
@@ -172,8 +172,7 @@ def download_template(request):
     download_file = os.path.join(settings.RESOURCES_ROOT, "Rework Input template.xlsx")
 
     file_mimetype, _ = mimetypes.guess_type(download_file)
-    print("download file", file_mimetype)
-
+ 
     response = FileResponse(open(download_file, "rb"), content_type=file_mimetype)
     response["Content-Disposition"] = "attachment; filename=%s" % smart_str(
         "Rework Input template.xlsx"
@@ -197,7 +196,7 @@ def download_template(request):
 def QP_iness_bulk_upload(request):
 
     quarter = request.POST.get("quarter")
-    print(quarter)
+
     file = request.FILES["QP_upload_file"]
     qp_data = reval_file.objects.filter(quarter=quarter)
     # df = pd.read_excel(excel)
